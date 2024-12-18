@@ -1,4 +1,4 @@
-package com.example.filmapp
+package com.example.filmapp.navigation
 
 sealed class Screen(val route: String) {
 

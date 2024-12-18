@@ -14,7 +14,6 @@ import java.lang.Exception
 
 class MainViewModel: ViewModel() {
 
-    private val _filmState = mutableStateOf(FilmState())
     private val _genreState= mutableStateOf(GenreState())
     val genreState: State<GenreState> = _genreState
     var movieByCategories = mutableMapOf<Int, List<Movie>>()
@@ -59,12 +58,6 @@ class MainViewModel: ViewModel() {
 
         }
     }
-
-    data class FilmState(
-        val loading: Boolean = true,
-        val list: List<Movie> = emptyList(),
-        val error: String? = null
-    )
 
     data class GenreState(
         val loading: Boolean = true,

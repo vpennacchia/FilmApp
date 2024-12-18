@@ -1,9 +1,11 @@
-package com.example.filmapp
+package com.example.filmapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.filmapp.MovieDetailScreen
+import com.example.filmapp.MovieScreen
 import com.example.filmapp.objects.Movie
 
 
