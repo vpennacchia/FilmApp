@@ -17,6 +17,7 @@ class MainViewModel: ViewModel() {
     private val _genreState= mutableStateOf(GenreState())
     val genreState: State<GenreState> = _genreState
     var movieByCategories = mutableMapOf<Int, List<Movie>>()
+    var favorites = mutableListOf<Movie>()
 
     init {
         fetchGenres()

@@ -1,8 +1,37 @@
 package com.example.filmapp.navigation
 
-sealed class Screen(val route: String) {
+import androidx.annotation.DrawableRes
+import com.example.filmapp.navigation.Screen.MovieScreen
 
-    object MovieScreen: Screen("moviescreen")
-    object DetailScreen: Screen("detailscreen")
+sealed class Screen(val route: String, val name: String) {
+
+
+    sealed class MovieScreen(val dTitle: String, val dRoute: String)
+        : Screen(dTitle, dRoute) {
+        object Home: MovieScreen(
+            "Home",
+            "homescreen"
+        )
+
+        object Details: MovieScreen(
+            "Details",
+            "detailscreen"
+        )
+
+        object Favorites: MovieScreen(
+            "Favorites",
+            "favoritescreen"
+        )
+
+    }
+
 
 }
+
+val screensInDrawer = listOf(
+    MovieScreen.Home,
+    MovieScreen.Details,
+    MovieScreen.Favorites
+)
+
+

@@ -21,14 +21,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalDrawer
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,22 +45,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
+import com.example.filmapp.navigation.Screen
+import com.example.filmapp.navigation.screensInDrawer
 import com.example.filmapp.objects.Genre
 import com.example.filmapp.objects.Movie
 import kotlinx.coroutines.launch
 
 @Composable
-fun MovieScreen(navigateToDetail: (Movie) -> Unit,  modifier: Modifier = Modifier) {
-    val filmViewModel: MainViewModel = viewModel()
+fun MovieScreen(navigateToDetail: (Movie) -> Unit, navController: NavHostController,  modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
-    val genrestate by filmViewModel.genreState
+    val genrestate by viewModel.genreState
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         when {
@@ -75,7 +74,7 @@ fun MovieScreen(navigateToDetail: (Movie) -> Unit,  modifier: Modifier = Modifie
             }
 
             else -> {
-                MoviesScaffold(genresList = genrestate.list, filmViewModel, navigateToDetail)
+                MoviesScaffold(genresList = genrestate.list, viewModel, navigateToDetail, navController)
             }
         }
     }
@@ -86,19 +85,39 @@ fun MovieScreen(navigateToDetail: (Movie) -> Unit,  modifier: Modifier = Modifie
 fun MoviesScaffold(
     genresList: List<Genre>,
     filmViewModel: MainViewModel,
-    navigateToDetail: (Movie) -> Unit
+    navigateToDetail: (Movie) -> Unit,
+    navController: NavHostController
 ) {
     val drawerState = rememberDrawerState(androidx.compose.material.DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val controller: NavController = rememberNavController()
+    val navBackStackEntry by controller.currentBackStackEntryAsState()
 
     ModalDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(
-                onMenuItemClicked = { menuItem ->
-                    scope.launch { drawerState.close() }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize() // Riempie tutta l'area del drawer
+                    .background(Color.DarkGray) // Imposta il colore di sfondo
+                    .padding(16.dp) // Applica il padding interno
+                    .width(200.dp)
+            ) {
+                items(screensInDrawer) { item ->
+
+                    if(item.dTitle == "Home" || item.dTitle == "Favorites" ) {
+                        DrawerItem(item = item) {
+                            scope.launch {
+                                drawerState.close()
+                            }
+
+                            navController.navigate(item.dRoute)
+
+                        }
+                    }
+
                 }
-            )
+            }
         }
     ) {
         Scaffold(
@@ -195,33 +214,35 @@ fun GenresScreen(
 }
 
 @Composable
-fun DrawerContent(onMenuItemClicked: (String) -> Unit) {
+fun MovieItem(movie: Movie,  navigateToDetail: (Movie) -> Unit ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.DarkGray)
-            .padding(16.dp)
+        modifier = Modifier.padding(8.dp).fillMaxSize().clickable { navigateToDetail(movie) },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Menu",
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp)
+        AsyncImage(
+            model = "https://image.tmdb.org/t/p/w200/${movie.poster_path}",
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize().aspectRatio(1f)
         )
+    }
+}
 
-        // Aggiungi elementi di menu
-        listOf("Home", "Preferiti").forEach { menuItem ->
-            TextButton(
-                onClick = { onMenuItemClicked(menuItem) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = menuItem,
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
+@Composable
+fun DrawerItem(
+    item: Screen.MovieScreen,
+    onDrawerItemClicked : () -> Unit
+){
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .clickable {
+                onDrawerItemClicked()
+            }) {
+        Text(
+            text = item.dTitle,
+            style = androidx.compose.material.MaterialTheme.typography.h5,
+        )
     }
 }
 
@@ -263,72 +284,6 @@ fun SearchBar(
         )
 }
 
-@Composable
-fun MovieItem(movie: Movie,  navigateToDetail: (Movie) -> Unit ) {
-    Column(
-        modifier = Modifier.padding(8.dp).fillMaxSize().clickable { navigateToDetail(movie) },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w200/${movie.poster_path}",
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize().aspectRatio(1f)
-        )
-    }
-}
 
-@Composable
-fun MovieDetailScreen(movie: Movie) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = movie.title, style = MaterialTheme.typography.titleLarge, color = Color(0xFFFFFFFF))
-        Spacer(modifier = Modifier.height(8.dp))
-        Image(
-            painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500/${movie.backdrop_path}"),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = movie.overview, style = MaterialTheme.typography.bodySmall, color = Color(0xFFFFFFFF))
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Release Date", style = MaterialTheme.typography.bodySmall, color = Color(0xFFFFFFFF))
-                Text(text = "Vote Average", style = MaterialTheme.typography.bodySmall, color = Color(0xFFFFFFFF))
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = movie.release_date, style = MaterialTheme.typography.bodySmall, color = Color(0xFFFFFFFF))
-                Text(text = movie.vote_average.toString(), style = MaterialTheme.typography.bodySmall, color = Color(0xFFFFFFFF))
-            }
-        }
-
-    }
-}
 
 
