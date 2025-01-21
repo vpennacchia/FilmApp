@@ -32,7 +32,7 @@ import com.example.filmapp.objects.Movie
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit) {
+fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel: MainViewModel) {
     var isFavorite by remember { mutableStateOf(false) }   // Stato locale per visualizzazione
 
     Column(
@@ -62,7 +62,7 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit) {
                 }
             ) {
                 Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (viewModel.favorites.contains(movie)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Icon",
                     tint = if (isFavorite) Color.Red else Color.Gray
                 )

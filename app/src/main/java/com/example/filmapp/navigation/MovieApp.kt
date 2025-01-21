@@ -34,7 +34,7 @@ fun MovieApp(navController: NavHostController) {
                     } else {
                         filmViewModel.favorites.add(category)
                     }
-                })
+                }, viewModel = filmViewModel)
             }
         }
 
