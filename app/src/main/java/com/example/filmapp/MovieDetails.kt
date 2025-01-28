@@ -28,13 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.filmapp.objects.Movie
+import com.example.filmapp.data.Movie
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel: MainViewModel) {
+fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, favMovies: List<Movie>) {
     var isFavorite by remember { mutableStateOf(false) }   // Stato locale per visualizzazione
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +61,7 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel:
                 }
             ) {
                 Icon(
-                    imageVector = if (viewModel.favorites.contains(movie)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (favMovies.contains(movie)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Icon",
                     tint = if (isFavorite) Color.Red else Color.Gray
                 )

@@ -1,7 +1,6 @@
 package com.example.filmapp.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,7 +9,7 @@ import com.example.filmapp.FavoritesScreen
 import com.example.filmapp.MainViewModel
 import com.example.filmapp.MovieDetailScreen
 import com.example.filmapp.MovieScreen
-import com.example.filmapp.objects.Movie
+import com.example.filmapp.data.Movie
 
 
 @Composable
@@ -26,15 +25,16 @@ fun MovieApp(navController: NavHostController) {
             }, navController, viewModel = filmViewModel)
         }
         composable(route = Screen.MovieScreen.Details.dRoute) {
-            val category = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("mov")
-            if (category != null) {
-                MovieDetailScreen(movie = category, {
-                    if (filmViewModel.favorites.contains(category)) {
-                        filmViewModel.favorites.remove(category)
+            val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("mov")
+            var favMovies = filmViewModel.getFavMovies()
+            if (movie != null) {
+                MovieDetailScreen(movie = movie, {
+                    if (!favMovies.contains(movie)) {
+                        filmViewModel.addFavMovie(movie)
                     } else {
-                        filmViewModel.favorites.add(category)
+                        filmViewModel.deleteFavMovie(movie)
                     }
-                }, viewModel = filmViewModel)
+                }, favMovies = favMovies)
             }
         }
 
@@ -42,7 +42,7 @@ fun MovieApp(navController: NavHostController) {
             FavoritesScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            },  favoritesList = filmViewModel.favorites)
+            },  favoritesList = filmViewModel.getFavMovies())
         }
 
     }

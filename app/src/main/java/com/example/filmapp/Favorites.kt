@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.filmapp.objects.Movie
+import com.example.filmapp.data.Movie
 
 @Composable
 fun FavoritesScreen(
-    favoritesList: MutableList<Movie>,
+    favoritesList: List<Movie>,
     navigateToDetail: (Movie) -> Unit
 ) {
     Column(

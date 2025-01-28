@@ -1,6 +1,6 @@
 package com.example.filmapp.api
-import com.example.filmapp.objects.GenreResponse
-import com.example.filmapp.objects.MovieResponse
+import com.example.filmapp.data.GenreResponse
+import com.example.filmapp.data.MovieResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
