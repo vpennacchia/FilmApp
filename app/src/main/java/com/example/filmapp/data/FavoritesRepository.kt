@@ -15,8 +15,4 @@ class FavoritesRepository(private val favDAO: FavoritesDAO) {
         favDAO.deleteFavorite(favorite)
     }
 
-    suspend fun isFavorite(movieId: Int): Boolean {
-        return favDAO.isMovieInFavorites(movieId)
-    }
-
 }

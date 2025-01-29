@@ -38,7 +38,7 @@ fun MovieApp(navController: NavHostController) {
             }
         }
 
-        composable(route = Screen.MovieScreen.Favorites.dRoute) {
+        composable(route = Screen.MovieScreen.MyList.dRoute) {
             FavoritesScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)

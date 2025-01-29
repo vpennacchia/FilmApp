@@ -21,7 +21,4 @@ abstract class FavoritesDAO {
     @Delete
     abstract suspend fun deleteFavorite(wishEntity: Movie)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM 'favorites-table' WHERE id = :movieId)")
-    abstract suspend fun isMovieInFavorites(movieId: Int): Boolean
-
 }

@@ -102,7 +102,7 @@ fun MoviesScaffold(
             ) {
                 items(screensInDrawer) { item ->
 
-                    if(item.dTitle == "Home" || item.dTitle == "Favorites" ) {
+                    if(item.dTitle == "Home" || item.dTitle == "My List" ) {
                         DrawerItem(item = item) {
                             scope.launch {
                                 drawerState.close()
