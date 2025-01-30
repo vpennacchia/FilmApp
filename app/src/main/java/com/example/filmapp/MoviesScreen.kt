@@ -54,6 +54,7 @@ import com.example.filmapp.navigation.Screen
 import com.example.filmapp.navigation.screensInDrawer
 import com.example.filmapp.data.Genre
 import com.example.filmapp.data.Movie
+import com.example.filmapp.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable

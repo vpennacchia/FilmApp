@@ -6,18 +6,37 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.filmapp.FavoritesScreen
-import com.example.filmapp.MainViewModel
+import com.example.filmapp.viewmodel.MainViewModel
 import com.example.filmapp.MovieDetailScreen
 import com.example.filmapp.MovieScreen
 import com.example.filmapp.data.Movie
+import com.example.filmapp.viewmodel.AuthViewModel
+import eu.tutorials.chatroomapp.screen.LoginScreen
+import eu.tutorials.chatroomapp.screen.SignUpScreen
 
 
 @Composable
-fun MovieApp(navController: NavHostController) {
+fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
 
     val filmViewModel: MainViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screen.MovieScreen.Home.dRoute ) {
+    NavHost(navController = navController, startDestination = Screen.MovieScreen.SignUp.dRoute ) {
+
+        composable(Screen.MovieScreen.SignUp.dRoute) {
+            SignUpScreen(
+                authViewModel = authViewModel,
+                onNavigateToLogin = { navController.navigate(Screen.MovieScreen.Login.dRoute) }
+            )
+        }
+        composable(Screen.MovieScreen.Login.dRoute) {
+            LoginScreen(
+                authViewModel = authViewModel,
+                onNavigateToSignUp = { navController.navigate(Screen.MovieScreen.SignUp.dRoute) }
+            ) {
+                navController.navigate(Screen.MovieScreen.Home.dRoute)
+            }
+        }
+
         composable(route = Screen.MovieScreen.Home.dRoute) {
             MovieScreen( navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)

@@ -23,6 +23,16 @@ sealed class Screen(val route: String, val name: String) {
             "favoritescreen"
         )
 
+        object Login: MovieScreen(
+            "Login",
+            "loginscreen"
+        )
+
+        object SignUp: MovieScreen(
+            "My List",
+            "signupscreen"
+        )
+
     }
 
 

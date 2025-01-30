@@ -1,4 +1,4 @@
-package com.example.filmapp
+package com.example.filmapp.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

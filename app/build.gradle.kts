@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.runtime.livedata)
     //val nav_version = "2.7.5"
     val compose_version = "1.6.0-alpha08"
     val room = "2.6.0"
@@ -78,6 +80,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation( "androidx.compose.material:material:1.5.2")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
     //Image loading
     implementation("io.coil-kt:coil-compose:2.4.0")
