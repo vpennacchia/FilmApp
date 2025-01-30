@@ -8,9 +8,9 @@ import com.example.filmapp.api.filmService
 import com.example.filmapp.data.FavoritesRepository
 import com.example.filmapp.data.Genre
 import com.example.filmapp.data.GenreResponse
+import com.example.filmapp.data.Graph
 import com.example.filmapp.data.Movie
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.lang.Exception

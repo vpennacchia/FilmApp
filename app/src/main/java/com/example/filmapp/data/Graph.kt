@@ -1,9 +1,7 @@
-package com.example.filmapp
+package com.example.filmapp.data
 
 import android.content.Context
 import androidx.room.Room
-import com.example.filmapp.data.FavoritesDataBase
-import com.example.filmapp.data.FavoritesRepository
 
 object Graph {
     lateinit var dataBase: FavoritesDataBase
