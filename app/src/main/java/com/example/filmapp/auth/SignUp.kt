@@ -1,5 +1,6 @@
 package eu.tutorials.chatroomapp.screen
 
+import android.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,6 +35,7 @@ fun SignUpScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var repeatPassword by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
 
@@ -56,6 +59,15 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             visualTransformation = PasswordVisualTransformation()
         )
+
+        OutlinedTextField(
+            value = repeatPassword,
+            onValueChange = { repeatPassword = it },
+            label = { Text("Repeat Password") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            visualTransformation = PasswordVisualTransformation()
+        )
+
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
@@ -84,5 +96,12 @@ fun SignUpScreen(
         Text("Already have an account? Sign in.",
             modifier = Modifier.clickable { onNavigateToLogin() }
         )
+
+        if(password != repeatPassword && password != "" && repeatPassword != "") {
+            Text(
+                text = "Password Mismatch",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }

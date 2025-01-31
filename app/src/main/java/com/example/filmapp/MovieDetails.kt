@@ -125,14 +125,16 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, favMovies:
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    var imagevector = Icons.Default.Check
                     IconButton(
                         onClick = {
                             isFavorite = !isFavorite
                             onFavoriteClick(movie)
+                            imagevector = if (imagevector == Icons.Default.Check) Icons.Default.Close else Icons.Default.Check
                         }
                     ) {
                         Icon(
-                            imageVector = if (favMovies.contains(movie)) Icons.Default.Check else Icons.Default.Close,
+                            imageVector = imagevector,
                             contentDescription = "Favorite Icon",
                             tint = if (isFavorite) Color.Red else Color.Gray
                         )
