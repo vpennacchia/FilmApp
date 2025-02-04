@@ -5,13 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.filmapp.api.filmService
-import com.example.filmapp.data.FavoritesRepository
-import com.example.filmapp.data.Genre
-import com.example.filmapp.data.GenreResponse
-import com.example.filmapp.data.Graph
-import com.example.filmapp.data.Movie
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import com.example.filmapp.dataFirebase.Genre
+import com.example.filmapp.dataFirebase.GenreResponse
+import com.example.filmapp.dataFirebase.Movie
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -21,7 +17,6 @@ class MainViewModel: ViewModel() {
     val genreState: State<GenreState> = _genreState
     var movieByCategories = mutableMapOf<Int, List<Movie>>()
     var favorites = mutableListOf<Movie>()
-    private val favoritesRepository: FavoritesRepository = Graph.favRepo
 
     init {
         fetchGenres()
@@ -62,27 +57,6 @@ class MainViewModel: ViewModel() {
             movieByCategories[el.id] = allMovies
 
         }
-    }
-
-    fun addFavMovie(movie:Movie) {
-        viewModelScope.launch(Dispatchers.IO) { //ottimizza nelle kotlin coroutine le operazioni di IO
-            favoritesRepository.addFavorite(favorite = movie)
-        }
-    }
-
-
-    fun deleteFavMovie(movie: Movie) {
-        viewModelScope.launch(Dispatchers.IO) { //ottimizza nelle kotlin coroutine le operazioni di IO
-            favoritesRepository.deleteFavorite(favorite = movie)
-        }
-    }
-
-    fun getFavMovies(): List<Movie> {
-        viewModelScope.launch {
-            favorites = favoritesRepository.getFavorites().first().toMutableList()
-        }
-
-        return favorites
     }
 
     data class GenreState(

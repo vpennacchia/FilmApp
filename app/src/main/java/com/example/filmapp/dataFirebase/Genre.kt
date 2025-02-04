@@ -1,4 +1,4 @@
-package com.example.filmapp.data
+package com.example.filmapp.dataFirebase
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

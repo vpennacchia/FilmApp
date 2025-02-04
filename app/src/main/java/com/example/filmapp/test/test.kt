@@ -1,7 +1,7 @@
 package com.example.filmapp.test
 
 import com.example.filmapp.api.filmService
-import com.example.filmapp.data.Movie
+import com.example.filmapp.dataFirebase.Movie
 
 class test {
 

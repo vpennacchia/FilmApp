@@ -9,8 +9,9 @@ import com.example.filmapp.FavoritesScreen
 import com.example.filmapp.viewmodel.MainViewModel
 import com.example.filmapp.MovieDetailScreen
 import com.example.filmapp.MovieScreen
-import com.example.filmapp.data.Movie
+import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.AuthViewModel
+import com.example.filmapp.viewmodel.MovieViewModel
 import eu.tutorials.chatroomapp.screen.LoginScreen
 import eu.tutorials.chatroomapp.screen.SignUpScreen
 
@@ -18,7 +19,8 @@ import eu.tutorials.chatroomapp.screen.SignUpScreen
 @Composable
 fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
 
-    val filmViewModel: MainViewModel = viewModel()
+    val filmViewModel: MovieViewModel = viewModel()
+    val genreViewModel: MainViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.MovieScreen.SignUp.dRoute ) {
 
@@ -41,19 +43,19 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
             MovieScreen( navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            }, navController, viewModel = filmViewModel)
+            }, navController, viewModel = genreViewModel)
         }
         composable(route = Screen.MovieScreen.Details.dRoute) {
             val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("mov")
-            var favMovies = filmViewModel.getFavMovies()
+            var favMovies = filmViewModel.getFavorites()
             if (movie != null) {
                 MovieDetailScreen(movie = movie, {
                     if (!favMovies.contains(movie)) {
-                        filmViewModel.addFavMovie(movie)
+                        filmViewModel.addFavorite(movie)
                     } else {
-                        filmViewModel.deleteFavMovie(movie)
+                        filmViewModel.removeFavorite(movie.id)
                     }
-                }, favMovies = favMovies)
+                })
             }
         }
 
@@ -61,7 +63,7 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
             FavoritesScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            },  favoritesList = filmViewModel.getFavMovies())
+            },  favoritesList = filmViewModel.getFavorites())
         }
 
     }

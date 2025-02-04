@@ -52,13 +52,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.filmapp.navigation.Screen
 import com.example.filmapp.navigation.screensInDrawer
-import com.example.filmapp.data.Genre
-import com.example.filmapp.data.Movie
+import com.example.filmapp.dataFirebase.Genre
+import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun MovieScreen(navigateToDetail: (Movie) -> Unit, navController: NavHostController,  modifier: Modifier = Modifier, viewModel: MainViewModel) {
+fun MovieScreen(navigateToDetail: (Movie) -> Unit, navController: NavHostController, modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
     val genrestate by viewModel.genreState
 
@@ -212,7 +212,7 @@ fun GenresScreen(
 }
 
 @Composable
-fun MovieItem(movie: Movie,  navigateToDetail: (Movie) -> Unit ) {
+fun MovieItem(movie: Movie, navigateToDetail: (Movie) -> Unit ) {
     Column(
         modifier = Modifier.padding(8.dp).fillMaxSize().clickable { navigateToDetail(movie) },
         horizontalAlignment = Alignment.CenterHorizontally

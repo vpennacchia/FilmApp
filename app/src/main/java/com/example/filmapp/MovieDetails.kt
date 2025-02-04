@@ -30,11 +30,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.filmapp.data.Movie
+import com.example.filmapp.dataFirebase.Movie
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, favMovies: List<Movie>) {
+fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit) {
     var isFavorite by remember { mutableStateOf(false) }   // Stato locale per visualizzazione
     Column(
         modifier = Modifier
