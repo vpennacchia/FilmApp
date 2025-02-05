@@ -18,9 +18,9 @@ sealed class Screen(val route: String, val name: String) {
             "detailscreen"
         )
 
-        object MyList: MovieScreen(
-            "My List",
-            "favoritescreen"
+        object MyAccount: MovieScreen(
+            "My Account",
+            "accountscreen"
         )
 
         object Login: MovieScreen(
@@ -41,7 +41,7 @@ sealed class Screen(val route: String, val name: String) {
 val screensInDrawer = listOf(
     MovieScreen.Home,
     MovieScreen.Details,
-    MovieScreen.MyList
+    MovieScreen.MyAccount
 )
 
 

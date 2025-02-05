@@ -103,7 +103,7 @@ fun MoviesScaffold(
             ) {
                 items(screensInDrawer) { item ->
 
-                    if(item.dTitle == "Home" || item.dTitle == "My List" ) {
+                    if(item.dTitle == "Home" || item.dTitle == "My Account" ) {
                         DrawerItem(item = item) {
                             scope.launch {
                                 drawerState.close()
@@ -212,16 +212,27 @@ fun GenresScreen(
 }
 
 @Composable
-fun MovieItem(movie: Movie, navigateToDetail: (Movie) -> Unit ) {
+fun MovieItem(movie: Movie, navigateToDetail: (Movie) -> Unit) {
     Column(
-        modifier = Modifier.padding(8.dp).fillMaxSize().clickable { navigateToDetail(movie) },
+        modifier = Modifier.padding(8.dp).fillMaxSize().clip(RoundedCornerShape(8.dp)).clickable { navigateToDetail(movie) },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w200/${movie.poster_path}",
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize().aspectRatio(1f)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f / 3f)
+                .clip(RoundedCornerShape(8.dp))
+                .clickable { navigateToDetail(movie) },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w200/${movie.poster_path}",
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp))
+            )
+        }
     }
 }
 

@@ -59,11 +59,11 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
             }
         }
 
-        composable(route = Screen.MovieScreen.MyList.dRoute) {
+        composable(route = Screen.MovieScreen.MyAccount.dRoute) {
             FavoritesScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            },  favoritesList = filmViewModel.getFavorites())
+            },  favoritesList = filmViewModel.getFavorites(), authViewModel = authViewModel)
         }
 
     }
