@@ -8,6 +8,8 @@ import com.example.filmapp.api.filmService
 import com.example.filmapp.dataFirebase.Genre
 import com.example.filmapp.dataFirebase.GenreResponse
 import com.example.filmapp.dataFirebase.Movie
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -16,7 +18,8 @@ class MainViewModel: ViewModel() {
     private val _genreState= mutableStateOf(GenreState())
     val genreState: State<GenreState> = _genreState
     var movieByCategories = mutableMapOf<Int, List<Movie>>()
-    var favorites = mutableListOf<Movie>()
+    private val _providers = MutableStateFlow<List<String>>(emptyList())
+    val providers: StateFlow<List<String>> = _providers
 
     init {
         fetchGenres()
@@ -56,6 +59,19 @@ class MainViewModel: ViewModel() {
 
             movieByCategories[el.id] = allMovies
 
+        }
+    }
+
+    fun getMovieProviders(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = filmService.getMovieWatchProviders(movieId, "447f42fa4bc5d5ebd07b387dee8385d7")
+                val italianProviders = response.results?.get("IT")?.flatrate?.map { it.providerName }  ?: response.results?.get("IT")?.rent?.map { it.providerName } ?: response.results?.get("IT")?.buy?.map { it.providerName } ?: emptyList()
+                _providers.value = italianProviders
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _providers.value = emptyList()
+            }
         }
     }
 

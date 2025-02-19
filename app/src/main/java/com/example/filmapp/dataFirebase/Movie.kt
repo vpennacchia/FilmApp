@@ -1,5 +1,6 @@
 package com.example.filmapp.dataFirebase
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -19,6 +20,21 @@ data class Movie(
     val vote_average: Double = 0.0,
     val vote_count: Int = 0
 ): Parcelable
+
+data class WatchProvidersResponse(
+    @SerializedName("results") val results: Map<String, ProviderInfo>?
+)
+
+data class ProviderInfo(
+    @SerializedName("flatrate") val flatrate: List<ProviderDetail>?,
+    @SerializedName("buy") val buy: List<ProviderDetail>?,
+    @SerializedName("rent") val rent: List<ProviderDetail>?
+)
+
+data class ProviderDetail(
+    @SerializedName("provider_name") val providerName: String,
+    @SerializedName("logo_path") val logoPath: String
+)
 
 data class MovieResponse(
     val results: List<Movie>
