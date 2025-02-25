@@ -75,6 +75,22 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    fun getProviderLink(providerName: String): String {
+        val providerUrl = when (providerName) {
+            "netflix" -> "https://www.netflix.com/"
+            "amazon prime video" -> "https://www.primevideo.com/"
+            "disney plus" -> "https://www.disneyplus.com/"
+            "rakuten" -> "https://www.rakuten.tv/it"
+            "apple tv" -> "https://tv.apple.com/it"
+            "google" -> "https://tv.google/intl/it_it/"
+            "microsoft store" -> "https://www.microsoft.com/it-it/store/movies-and-tv"
+            "sky go" -> "https://skygo.sky.it/"
+            else -> ""
+        }
+
+        return providerUrl
+    }
+
     data class GenreState(
         val loading: Boolean = true,
         val list: List<Genre> = emptyList(),

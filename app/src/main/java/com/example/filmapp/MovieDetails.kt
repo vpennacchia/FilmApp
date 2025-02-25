@@ -1,9 +1,12 @@
 package com.example.filmapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.MainViewModel
+import androidx.compose.ui.platform.LocalContext
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -115,7 +119,7 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel:
                 }
             }
 
-            StreamingProvidersRow(providers)
+            StreamingProvidersRow(providers, viewModel)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -145,7 +149,8 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel:
 
 
 @Composable
-fun StreamingProvidersRow(providers: List<String>) {
+fun StreamingProvidersRow(providers: List<String>, viewModel: MainViewModel = viewModel()) {
+
 
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
         Text(
@@ -167,26 +172,32 @@ fun StreamingProvidersRow(providers: List<String>) {
                 items(providers) { provider ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         var providerName = provider.lowercase()
-                        if (providerName == "rakuten tv") {
-                            providerName = "rakuten"
-                        }
-                        Image(
+                        val context = LocalContext.current
 
-                            painter = rememberAsyncImagePainter(
-                                "https://logo.clearbit.com/${providerName.replace("\\s+".toRegex(), "")}.com"
-                            ),
-                            contentDescription = provider,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(Color.DarkGray)
-                        )
-                        Text(
-                            text = provider,
-                            fontSize = 10.sp,
-                            color = Color.LightGray,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
+                        if (providerName == "rakuten tv") { providerName = "rakuten" } else if (providerName == "google play movies") { providerName = "google" }
+
+                        if(providerName != "timvision" && providerName != "netflix basic with ads" && providerName != "mediaset infinity") {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    "https://logo.clearbit.com/${providerName.replace("\\s+".toRegex(), "")}.com"
+                                ),
+                                contentDescription = provider,
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.DarkGray)
+                                    .clickable {
+                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.getProviderLink(providerName)))
+                                         context.startActivity(intent)
+                                    }
+                            )
+                            Text(
+                                text = provider,
+                                fontSize = 10.sp,
+                                color = Color.LightGray,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
                     }
                 }
             }
