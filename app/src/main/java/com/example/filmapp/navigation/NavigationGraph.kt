@@ -5,7 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.filmapp.FavoritesScreen
+import com.example.filmapp.AccountScreen
 import com.example.filmapp.viewmodel.MainViewModel
 import com.example.filmapp.MovieDetailScreen
 import com.example.filmapp.MovieScreen
@@ -60,7 +60,7 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
         }
 
         composable(route = Screen.MovieScreen.MyAccount.dRoute) {
-            FavoritesScreen(navigateToDetail = {
+            AccountScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
             },  favoritesList = filmViewModel.getFavorites(), authViewModel = authViewModel)
