@@ -194,11 +194,11 @@ fun GenresScreen(
                     val movies = moviesState[genre.id] ?: emptyList()
 
                     Text(
-                        text = genre.name.uppercase(), // Netflix usa spesso maiuscole
+                        text = genre.name.uppercase(),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 2.sp, // Effetto più aggressivo stile Netflix
-                            fontSize = 18.sp // Leggermente più grande
+                            letterSpacing = 2.sp,
+                            fontSize = 18.sp
                         ),
                         modifier = Modifier.padding(vertical = 8.dp),
                         color = Color.White
