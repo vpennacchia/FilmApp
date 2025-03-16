@@ -78,7 +78,7 @@ class MainViewModel: ViewModel() {
     fun getProviderLink(providerName: String): String {
         val providerUrl = when (providerName) {
             "netflix" -> "https://www.netflix.com/"
-            "amazon prime video" -> "https://www.primevideo.com/"
+            "amazon video" -> "https://www.primevideo.com/"
             "disney plus" -> "https://www.disneyplus.com/"
             "rakuten" -> "https://www.rakuten.tv/it"
             "apple tv" -> "https://tv.apple.com/it"

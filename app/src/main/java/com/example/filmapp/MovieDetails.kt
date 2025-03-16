@@ -135,7 +135,7 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel:
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add,
+                        imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add, //todo tenere spuntata se appartiene ai preferiti
                         contentDescription = null,
                         tint = Color.White
                     )

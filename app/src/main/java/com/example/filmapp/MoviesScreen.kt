@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -88,17 +89,16 @@ fun MoviesScaffold(
 ) {
     val drawerState = rememberDrawerState(androidx.compose.material.DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val controller: NavController = rememberNavController()
-    val navBackStackEntry by controller.currentBackStackEntryAsState()
+
 
     ModalDrawer(
         drawerState = drawerState,
         drawerContent = {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize() // Riempie tutta l'area del drawer
-                    .background(Color.DarkGray) // Imposta il colore di sfondo
-                    .padding(16.dp) // Applica il padding interno
+                    .fillMaxSize()
+                    .background(Color.DarkGray)
+                    .padding(16.dp)
                     .width(200.dp)
             ) {
                 items(screensInDrawer) { item ->
@@ -160,6 +160,7 @@ fun GenresScreen(
     Column(
         modifier = modifier
     ) {
+        val moviesState = filmViewModel.movieByCategories
         Spacer(modifier = Modifier.height(16.dp))
 
         SearchBar(
@@ -171,40 +172,45 @@ fun GenresScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+        if (searchQuery.isNotEmpty()) {
+            val filteredMovies = filmViewModel.movieByCategories.values.toList().flatten().filter { it.title.contains(searchQuery, ignoreCase = true) }
 
-        LazyColumn {
-            items(genresList) { genre ->
-                Text(
-                    text = genre.name,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    color = Color(0xFFFFFFFF)
-                )
-
-                val moviesState = filmViewModel.movieByCategories
-                val movies = moviesState[genre.id] ?: emptyList()
-
-                val filteredMovies = if (searchQuery.isEmpty()) {
-                    movies
-                } else {
-                    movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    items(filteredMovies) { movie ->
+                        MovieItem(movie, navigateToDetail,
+                            modifier = Modifier
+                            .fillMaxWidth(0.2f)
+                            .height(250.dp) )
+                    }
                 }
 
-                if (filteredMovies.isNotEmpty()) {
+        } else {
+            LazyColumn {
+
+                items(genresList) { genre ->
+                    val movies = moviesState[genre.id] ?: emptyList()
+
+                    Text(
+                        text = genre.name.uppercase(), // Netflix usa spesso maiuscole
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 2.sp, // Effetto più aggressivo stile Netflix
+                            fontSize = 18.sp // Leggermente più grande
+                        ),
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = Color.White
+                    )
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
-                        items(filteredMovies) { movie ->
+                        items(movies) { movie ->
                             MovieItem(movie, navigateToDetail)
                         }
                     }
-                } else if (searchQuery.isNotEmpty()) {
-                    Text(
-                        text = "Nessun film trovato per \"$searchQuery\"",
-                        color = Color.Gray,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
                 }
             }
         }
@@ -212,9 +218,9 @@ fun GenresScreen(
 }
 
 @Composable
-fun MovieItem(movie: Movie, navigateToDetail: (Movie) -> Unit) {
+fun MovieItem(movie: Movie, navigateToDetail: (Movie) -> Unit, modifier: Modifier = Modifier.padding(8.dp).fillMaxSize()) {
     Column(
-        modifier = Modifier.padding(8.dp).fillMaxSize().clip(RoundedCornerShape(8.dp)).clickable { navigateToDetail(movie) },
+        modifier = modifier.clip(RoundedCornerShape(8.dp)).clickable { navigateToDetail(movie) },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
