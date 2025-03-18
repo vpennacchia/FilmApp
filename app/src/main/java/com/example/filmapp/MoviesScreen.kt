@@ -173,7 +173,12 @@ fun GenresScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
         if (searchQuery.isNotEmpty()) {
-            val filteredMovies = filmViewModel.movieByCategories.values.toList().flatten().filter { it.title.contains(searchQuery, ignoreCase = true) }
+            val filteredMovies = filmViewModel.movieByCategories
+                .values
+                .toList()
+                .flatten()
+                .filter { it.title.contains(searchQuery, ignoreCase = true) }
+                .distinctBy { it.id }
 
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
