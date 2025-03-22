@@ -9,7 +9,36 @@ object MovieRepository {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    suspend fun addFavorite(movie: Movie) {
+    suspend fun addMovieInMyList(movie: Movie) {
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("users").document(userId)
+            .collection("mylist")
+            .document(movie.id.toString())
+            .set(movie)
+            .await()
+    }
+
+
+    suspend fun removeMovieInMyList(movieId: Int) {
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("users").document(userId)
+            .collection("mylist")
+            .document(movieId.toString())
+            .delete()
+            .await()
+    }
+
+    fun getMyListMovies(): Flow<List<Movie>> = flow {
+        val userId = auth.currentUser?.uid ?: return@flow
+        val snapshot = db.collection("users").document(userId)
+            .collection("mylist").get().await()
+
+        val movies = snapshot.documents.mapNotNull { it.toObject(Movie::class.java) }
+        emit(movies)
+    }
+
+
+    suspend fun addFavoritesMovie(movie: Movie) {
         val userId = auth.currentUser?.uid ?: return
         db.collection("users").document(userId)
             .collection("favorites")
@@ -19,7 +48,7 @@ object MovieRepository {
     }
 
 
-    suspend fun removeFavorite(movieId: Int) {
+    suspend fun removeFavoritesMovie(movieId: Int) {
         val userId = auth.currentUser?.uid ?: return
         db.collection("users").document(userId)
             .collection("favorites")
@@ -28,7 +57,7 @@ object MovieRepository {
             .await()
     }
 
-    fun getFavorites(): Flow<List<Movie>> = flow {
+    fun getFavoritesMovies(): Flow<List<Movie>> = flow {
         val userId = auth.currentUser?.uid ?: return@flow
         val snapshot = db.collection("users").document(userId)
             .collection("favorites").get().await()

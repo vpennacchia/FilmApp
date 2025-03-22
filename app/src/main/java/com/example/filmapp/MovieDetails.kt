@@ -23,9 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,12 +55,17 @@ import com.example.filmapp.viewmodel.MovieViewModel
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, movieViewModel: MovieViewModel, viewModel: MainViewModel = viewModel()) {
+fun MovieDetailScreen(movie: Movie, onAddListClick: (Movie) -> Unit, onFavoriteClick : (Movie) -> Unit, movieViewModel: MovieViewModel, viewModel: MainViewModel = viewModel()) {
 
-    val favoriteMovies by movieViewModel.favoriteMovies.collectAsState()
+    val myListMovies by movieViewModel.myListMovies.collectAsState()
+    val myFavMovies by movieViewModel.favoritesMovies.collectAsState()
+
+    var isInMyList by remember {
+        mutableStateOf(myListMovies.any { it.id == movie.id })
+    }
 
     var isFavorite by remember {
-        mutableStateOf(favoriteMovies.any { it.id == movie.id })
+        mutableStateOf(myFavMovies.any { it.id == movie.id })
     }
 
 
@@ -91,11 +98,41 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, movieViewM
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.Start
         ) {
-            Text(
-                text = movie.title,
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-                color = Color.White
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = movie.title,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    IconButton(
+                        onClick = {
+                            onFavoriteClick(movie)
+                            isFavorite = !isFavorite
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ThumbUp,
+                            contentDescription = "Aggiungi ai preferiti",
+                            tint = if(isFavorite) Color.Red else Color.White,
+                            modifier = Modifier.size(20.dp) // Icona più piccola per allineamento
+                        )
+                    }
+                }
+            }
 
             Text(
                 text = movie.overview,
@@ -128,15 +165,15 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, movieViewM
             ) {
                 Button(
                     onClick = {
-                        onFavoriteClick(movie)
-                        isFavorite = !isFavorite
+                        onAddListClick(movie)
+                        isInMyList = !isInMyList
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add,
+                        imageVector = if (isInMyList) Icons.Default.Check else Icons.Default.Add,
                         contentDescription = null,
                         tint = Color.White
                     )

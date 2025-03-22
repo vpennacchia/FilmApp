@@ -1,6 +1,7 @@
 package com.example.filmapp.navigation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,24 +52,35 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
         }
         composable(route = Screen.MovieScreen.Details.dRoute) {
             val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("mov")
-            val favMovies by filmViewModel.favoriteMovies.collectAsState()
+            val myListMovies by filmViewModel.myListMovies.collectAsState()
+            val favMovies by filmViewModel.favoritesMovies.collectAsState()
             if (movie != null) {
                 MovieDetailScreen(movie = movie, {
-                    if (!favMovies.contains(movie)) {
-                        filmViewModel.addFavorite(movie)
+                    if (!myListMovies.contains(movie)) {
+                        filmViewModel.addMyListMovie(movie)
                     } else {
-                        filmViewModel.removeFavorite(movie.id)
+                        filmViewModel.removeMyListMovie(movie.id)
                     }
-                }, filmViewModel)
+                },
+                {
+                    if (!favMovies.contains(movie)) {
+                        Log.d("prova", movie.id.toString())
+                        filmViewModel.addFavoriteMovie(movie)
+                    } else {
+                        filmViewModel.removeFavoriteMovie(movie.id)
+                    }
+                }
+                , filmViewModel)
             }
         }
 
         composable(route = Screen.MovieScreen.MyAccount.dRoute) {
-            val favMovies by filmViewModel.favoriteMovies.collectAsState()
+            val myListMovies by filmViewModel.myListMovies.collectAsState()
+            val favMovies by filmViewModel.favoritesMovies.collectAsState()
             AccountScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            },  favoritesList = favMovies, authViewModel = authViewModel)
+            },  myList = myListMovies, favorites = favMovies, authViewModel = authViewModel)
         }
 
     }

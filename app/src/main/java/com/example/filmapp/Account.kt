@@ -50,12 +50,14 @@ import com.example.filmapp.viewmodel.AuthViewModel
 
 @Composable
 fun AccountScreen(
-    favoritesList: List<Movie>,
+    myList: List<Movie>,
+    favorites: List<Movie>,
     navigateToDetail: (Movie) -> Unit,
     authViewModel: AuthViewModel
 ) {
     val user by authViewModel.currentUser.observeAsState()
-    val isExpanded = remember { mutableStateOf(true) }
+    val isMylistExapend = remember { mutableStateOf(true) }
+    val isMyFavoritesExapend = remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -103,17 +105,17 @@ fun AccountScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "My List",
+                    text = "Your List",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
 
                 IconButton(
-                    onClick = { isExpanded.value = !isExpanded.value },
+                    onClick = { isMylistExapend.value = !isMylistExapend.value },
                 ) {
                     Icon(
-                        imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (isMylistExapend.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Toggle Grid Visibility",
                         tint = Color.White
                     )
@@ -122,7 +124,7 @@ fun AccountScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (favoritesList.isEmpty()) {
+            if (myList.isEmpty()) {
                 Text(
                     text = "No favorites yet!",
                     style = MaterialTheme.typography.bodyLarge,
@@ -130,7 +132,7 @@ fun AccountScreen(
                 )
             } else {
                 AnimatedVisibility(
-                    visible = isExpanded.value,
+                    visible = isMylistExapend.value,
                     enter = fadeIn(animationSpec = tween(300)) + expandVertically(),
                     exit = fadeOut(animationSpec = tween(300)) + shrinkVertically()
                 ) {
@@ -138,7 +140,69 @@ fun AccountScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        items(favoritesList) { movie ->
+                        items(myList) { movie ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { navigateToDetail(movie) }
+                            ) {
+                                AsyncImage(
+                                    model = "https://image.tmdb.org/t/p/w500/${movie.poster_path}",
+                                    contentDescription = movie.title,
+                                    modifier = Modifier
+                                        .width(120.dp)
+                                        .height(180.dp)
+                                        .clip(RoundedCornerShape(8.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Your Likes",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                IconButton(
+                    onClick = { isMyFavoritesExapend.value = !isMyFavoritesExapend.value },
+                ) {
+                    Icon(
+                        imageVector = if (isMylistExapend.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Toggle Grid Visibility",
+                        tint = Color.White
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (favorites.isEmpty()) {
+                Text(
+                    text = "No likes yet!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Gray
+                )
+            } else {
+                AnimatedVisibility(
+                    visible = isMyFavoritesExapend.value,
+                    enter = fadeIn(animationSpec = tween(300)) + expandVertically(),
+                    exit = fadeOut(animationSpec = tween(300)) + shrinkVertically()
+                ) {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(favorites) { movie ->
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
