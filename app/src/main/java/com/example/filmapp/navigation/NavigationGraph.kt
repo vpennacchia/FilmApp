@@ -1,6 +1,9 @@
 package com.example.filmapp.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,6 +19,7 @@ import eu.tutorials.chatroomapp.screen.LoginScreen
 import eu.tutorials.chatroomapp.screen.SignUpScreen
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
 
@@ -47,7 +51,7 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
         }
         composable(route = Screen.MovieScreen.Details.dRoute) {
             val movie = navController.previousBackStackEntry?.savedStateHandle?.get<Movie>("mov")
-            var favMovies = filmViewModel.getFavorites()
+            val favMovies by filmViewModel.favoriteMovies.collectAsState()
             if (movie != null) {
                 MovieDetailScreen(movie = movie, {
                     if (!favMovies.contains(movie)) {
@@ -55,15 +59,16 @@ fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
                     } else {
                         filmViewModel.removeFavorite(movie.id)
                     }
-                })
+                }, filmViewModel)
             }
         }
 
         composable(route = Screen.MovieScreen.MyAccount.dRoute) {
+            val favMovies by filmViewModel.favoriteMovies.collectAsState()
             AccountScreen(navigateToDetail = {
                 navController.currentBackStackEntry?.savedStateHandle?.set("mov", it)
                 navController.navigate(Screen.MovieScreen.Details.dRoute)
-            },  favoritesList = filmViewModel.getFavorites(), authViewModel = authViewModel)
+            },  favoritesList = favMovies, authViewModel = authViewModel)
         }
 
     }

@@ -3,7 +3,6 @@ package com.example.filmapp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,11 +49,18 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.MainViewModel
 import androidx.compose.ui.platform.LocalContext
+import com.example.filmapp.viewmodel.MovieViewModel
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel: MainViewModel = viewModel()) {
-    var isFavorite by remember { mutableStateOf(false) }
+fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, movieViewModel: MovieViewModel, viewModel: MainViewModel = viewModel()) {
+
+    val favoriteMovies by movieViewModel.favoriteMovies.collectAsState()
+
+    var isFavorite by remember {
+        mutableStateOf(favoriteMovies.any { it.id == movie.id })
+    }
+
 
     val providers by viewModel.providers.collectAsState()
 
@@ -132,7 +136,7 @@ fun MovieDetailScreen(movie: Movie, onFavoriteClick: (Movie) -> Unit, viewModel:
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add, //todo tenere spuntata se appartiene ai preferiti
+                        imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -184,8 +188,8 @@ fun StreamingProvidersRow(providers: List<String>, viewModel: MainViewModel = vi
                                     .clip(CircleShape)
                                     .background(Color.DarkGray)
                                     .clickable {
-                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.getProviderLink(providerName)))
-                                         context.startActivity(intent)
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.getProviderLink(providerName)))
+                                        context.startActivity(intent)
                                     }
                             )
                             Text(

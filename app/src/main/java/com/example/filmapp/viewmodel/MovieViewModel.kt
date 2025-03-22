@@ -4,34 +4,37 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.filmapp.dataFirebase.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {
     private val _favoriteMovies = MutableStateFlow<List<Movie>>(emptyList())
-    var favoriteMovies = mutableListOf<Movie>()
+    val favoriteMovies: StateFlow<List<Movie>> = _favoriteMovies
 
-    fun getFavorites(): MutableList<Movie> {
+    init {
+        getFavorites()
+    }
+
+    private fun getFavorites() {
         viewModelScope.launch {
             MovieRepository.getFavorites().collect {
-                _favoriteMovies.value = it
+                _favoriteMovies.value = it // Aggiorna lo stato
             }
-
-            favoriteMovies = _favoriteMovies.first().toMutableList()
         }
-
-        return favoriteMovies
     }
 
     fun addFavorite(movie: Movie) {
         viewModelScope.launch {
             MovieRepository.addFavorite(movie)
+            _favoriteMovies.value += movie
         }
     }
 
     fun removeFavorite(movieId: Int) {
         viewModelScope.launch {
             MovieRepository.removeFavorite(movieId)
+            _favoriteMovies.value = _favoriteMovies.value.filter { it.id != movieId }
         }
     }
 }
