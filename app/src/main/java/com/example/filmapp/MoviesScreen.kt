@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -32,6 +34,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,7 +47,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,6 +62,7 @@ import com.example.filmapp.navigation.screensInDrawer
 import com.example.filmapp.dataFirebase.Genre
 import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -94,26 +101,27 @@ fun MoviesScaffold(
     ModalDrawer(
         drawerState = drawerState,
         drawerContent = {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.DarkGray)
-                    .padding(16.dp)
-                    .width(200.dp)
+                    .background(Color(0xFF1E1E1E)) // Sfondo scuro moderno
+                    .padding(vertical = 16.dp)
+                    .width(250.dp)
             ) {
-                items(screensInDrawer) { item ->
+                LazyColumn() {
+                    items(screensInDrawer) { item ->
 
-                    if(item.dTitle == "Home" || item.dTitle == "My Account" ) {
-                        DrawerItem(item = item) {
-                            scope.launch {
-                                drawerState.close()
+                        if (item.dTitle == "Home" || item.dTitle == "My Account") {
+                            DrawerItem(item = item) {
+                                scope.launch {
+                                    drawerState.close()
+                                }
+
+                                navController.navigate(item.dRoute)
+
                             }
-
-                            navController.navigate(item.dRoute)
-
                         }
                     }
-
                 }
             }
         }
@@ -146,7 +154,6 @@ fun MoviesScaffold(
         }
     }
 }
-
 
 @Composable
 fun GenresScreen(
@@ -253,15 +260,29 @@ fun DrawerItem(
     onDrawerItemClicked : () -> Unit
 ){
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-            .clickable {
-                onDrawerItemClicked()
-            }) {
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Transparent)
+            .clickable { onDrawerItemClicked() }
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = if(item.dTitle == "Home") Icons.Default.Home else Icons.Default.Person,
+            contentDescription = item.dTitle,
+            tint = Color.White,
+            modifier = Modifier.size(24.dp)
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
         Text(
             text = item.dTitle,
-            style = androidx.compose.material.MaterialTheme.typography.h5,
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
         )
     }
 }
