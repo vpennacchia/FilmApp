@@ -22,10 +22,7 @@ import eu.tutorials.chatroomapp.screen.SignUpScreen
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun Navigation(navController: NavHostController, authViewModel: AuthViewModel) {
-
-    val filmViewModel: MovieViewModel = viewModel()
-    val genreViewModel: MainViewModel = viewModel()
+fun Navigation(navController: NavHostController, authViewModel: AuthViewModel, filmViewModel: MovieViewModel, genreViewModel: MainViewModel) {
 
     NavHost(navController = navController, startDestination = Screen.MovieScreen.SignUp.dRoute ) {
 

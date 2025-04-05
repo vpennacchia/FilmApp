@@ -12,6 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.filmapp.navigation.Navigation
 import com.example.filmapp.ui.theme.FilmAppTheme
 import com.example.filmapp.viewmodel.AuthViewModel
+import com.example.filmapp.viewmodel.MainViewModel
+import com.example.filmapp.viewmodel.MovieViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,12 +21,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val authViewModel: AuthViewModel = viewModel()
+            val filmViewModel: MovieViewModel = viewModel()
+            val genreViewModel: MainViewModel = viewModel()
+
             FilmAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(navController, authViewModel)
+                    Navigation(navController, authViewModel, filmViewModel, genreViewModel)
                 }
             }
         }

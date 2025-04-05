@@ -1,5 +1,6 @@
 package com.example.filmapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -54,7 +55,7 @@ class MainViewModel: ViewModel() {
                 val response = filmService.getMoviesByGenre("447f42fa4bc5d5ebd07b387dee8385d7", genreId = el.id, page = currentPage)
                 allMovies.addAll(response.results)
                 currentPage++
-            } while (currentPage <= 10)
+            } while (currentPage <= 15)
 
 
             movieByCategories[el.id] = allMovies
