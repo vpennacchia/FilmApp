@@ -36,6 +36,24 @@ data class ProviderDetail(
     @SerializedName("logo_path") val logoPath: String
 )
 
+data class MovieTrailerDetail(
+    @SerializedName("id") val trailerId: Int,
+    @SerializedName("results") val details: List<TrailerDetail>
+)
+
+data class TrailerDetail(
+    @SerializedName("iso_639_1") val providerName: String,
+    @SerializedName("iso_3166_1") val logoPath: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("key") val key: String,
+    @SerializedName("site") val site: String,
+    @SerializedName("size") val size: Int,
+    @SerializedName("type") val type: String,
+    @SerializedName("official") val official: Boolean,
+    @SerializedName("published_at") val published_at: String,
+    @SerializedName("id") val id: String
+)
+
 data class MovieResponse(
     val results: List<Movie>
 )

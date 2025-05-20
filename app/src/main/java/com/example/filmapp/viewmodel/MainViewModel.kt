@@ -20,7 +20,9 @@ class MainViewModel: ViewModel() {
     val genreState: State<GenreState> = _genreState
     var movieByCategories = mutableMapOf<Int, List<Movie>>()
     private val _providers = MutableStateFlow<List<String>>(emptyList())
+    private val _trailer = MutableStateFlow("")
     val providers: StateFlow<List<String>> = _providers
+    val trailer: StateFlow<String> = _trailer
 
     init {
         fetchGenres()
@@ -69,6 +71,25 @@ class MainViewModel: ViewModel() {
                 val response = filmService.getMovieWatchProviders(movieId, "447f42fa4bc5d5ebd07b387dee8385d7")
                 val italianProviders = response.results?.get("IT")?.flatrate?.map { it.providerName }  ?: response.results?.get("IT")?.rent?.map { it.providerName } ?: response.results?.get("IT")?.buy?.map { it.providerName } ?: emptyList()
                 _providers.value = italianProviders
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _providers.value = emptyList()
+            }
+        }
+    }
+
+    fun getMovieTrailer(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = filmService.getMovieTrailer(movieId, "447f42fa4bc5d5ebd07b387dee8385d7")
+                Log.e("trailer", response.toString())
+                val trailer = response.details.firstOrNull {
+                    it.site == "YouTube" &&
+                    it.type == "Trailer"
+                }?.key
+                Log.e("trailerKey", trailer.toString())
+                _trailer.value = trailer.toString()
+
             } catch (e: Exception) {
                 e.printStackTrace()
                 _providers.value = emptyList()

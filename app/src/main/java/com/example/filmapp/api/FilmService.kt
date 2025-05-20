@@ -1,6 +1,7 @@
 package com.example.filmapp.api
 import com.example.filmapp.dataFirebase.GenreResponse
 import com.example.filmapp.dataFirebase.MovieResponse
+import com.example.filmapp.dataFirebase.MovieTrailerDetail
 import com.example.filmapp.dataFirebase.WatchProvidersResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,4 +36,13 @@ interface MovieService {
         @Query("api_key") apiKey: String,
         @Query("language") language: String = "it-IT"
     ): WatchProvidersResponse
+
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getMovieTrailer(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String,
+    ): MovieTrailerDetail
+
+
 }

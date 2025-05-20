@@ -22,7 +22,7 @@ class MovieViewModel : ViewModel() {
     private fun getMyList() {
         viewModelScope.launch {
             MovieRepository.getMyListMovies().collect {
-                _myListMovies.value = it // Aggiorna lo stato
+                _myListMovies.value = it
             }
         }
     }

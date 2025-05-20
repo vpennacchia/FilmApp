@@ -1,8 +1,12 @@
 package com.example.filmapp
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import android.webkit.WebChromeClient
+import android.webkit.WebView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,16 +28,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,9 +60,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.filmapp.dataFirebase.Movie
 import com.example.filmapp.viewmodel.MainViewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.filmapp.viewmodel.MovieViewModel
 
-@SuppressLint("UnrememberedMutableState")
+@SuppressLint("UnrememberedMutableState", "SetJavaScriptEnabled")
 @Composable
 fun MovieDetailScreen(movie: Movie, onAddListClick: (Movie) -> Unit, onFavoriteClick : (Movie) -> Unit, movieViewModel: MovieViewModel, viewModel: MainViewModel = viewModel()) {
 
@@ -70,8 +80,12 @@ fun MovieDetailScreen(movie: Movie, onAddListClick: (Movie) -> Unit, onFavoriteC
 
 
     val providers by viewModel.providers.collectAsState()
+    val trailer by viewModel.trailer.collectAsState()
 
-    viewModel.getMovieProviders(movie.id)
+    LaunchedEffect(movie.id){
+        viewModel.getMovieProviders(movie.id)
+        viewModel.getMovieTrailer(movie.id)
+    }
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -142,6 +156,15 @@ fun MovieDetailScreen(movie: Movie, onAddListClick: (Movie) -> Unit, onFavoriteC
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
+
+            if (trailer.isNotEmpty()) {
+                Trailer("https://www.youtube.com/embed/$trailer")
+            } else {
+                Log.d("UI", "Trailer non ancora caricato")
+                CircularProgressIndicator()
+            }
+
+
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -242,6 +265,26 @@ fun StreamingProvidersRow(providers: List<String>, viewModel: MainViewModel = vi
         }
     }
 }
+
+@Composable
+fun Trailer(trailerLink: String) {
+    val context = LocalContext.current
+    Button(
+        onClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerLink))
+            context.startActivity(intent)
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+        shape = RoundedCornerShape(8.dp),
+
+    ) {
+        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Guarda Trailer", tint = Color.White)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text("Guarda Trailer", color = Color.White)
+    }
+}
+
+
 
 
 
